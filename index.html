@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PUBG 어셈블 팀 생성기</title>
+<style>
+body{font-family:Arial,Helvetica,sans-serif;background:#0f172a;color:#e5e7eb;margin:0;padding:20px}
+.container{max-width:1100px;margin:auto}
+h1{margin-bottom:20px}
+.topnav{display:flex;gap:10px;margin-bottom:20px}
+.topnav button{padding:12px 18px;border:none;border-radius:8px;background:#334155;color:white;font-weight:bold;cursor:pointer}
+.topnav button.active{background:#3b82f6}
+.buttons{display:flex;gap:10px;margin-bottom:20px}
+button.action{padding:12px 18px;border:none;border-radius:8px;background:#3b82f6;color:white;font-weight:bold;font-size:15px;cursor:pointer}
+button.action:hover{background:#2563eb}
+.section{margin-top:25px}
+.card{background:#1e293b;border-radius:12px;padding:18px;margin-top:10px;min-height:120px;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-weight:500}
+table{width:100%;border-collapse:collapse}
+th,td{padding:8px;text-align:center}
+th{background:#334155}
+tr:nth-child(even){background:#1f2a44}
+tr:nth-child(odd){background:#182235}
+.tier{opacity:0.7;font-size:12px;margin-left:4px}
+.hidden{display:none}
+</style>
+</head>
+<body>
+
+<div class="container">
+<h1>PUBG 어셈블 팀 생성기</h1>
+
+<div class="topnav">
+<button id="tabDuo" class="active" onclick="showDuo()">🎲 듀오 모드</button>
+<button id="tabSquad" onclick="showSquad()">👥 스쿼드 모드</button>
+</div>
+
+<!-- 듀오 영역 -->
+<div id="duoSection">
+<div class="buttons">
+<button class="action" onclick="generateDuos()">듀오 생성</button>
+</div>
+
+<div class="section">
+<h2>Match 1</h2>
+<div class="card" id="match1">듀오 생성을 눌러 팀을 만드세요</div>
+
+<h2>Match 2</h2>
+<div class="card" id="match2">듀오 생성을 눌러 팀을 만드세요</div>
+</div>
+</div>
+
+<!-- 스쿼드 영역 -->
+<div id="squadSection" class="hidden">
+<div class="buttons">
+<button class="action" onclick="generateSquad()">스쿼드 생성</button>
+</div>
+
+<div class="section">
+<h2>Squad Teams</h2>
+<div class="card" id="squad">스쿼드 생성을 눌러 팀을 만드세요</div>
+</div>
+</div>
+
+</div>
+
+<script>
+
+const tiers={
+1:["박프로","2cut","yugee","로자르","블랙워크","쪼이","태민98","폭시","오아"],
+2:["나브","더미노스","박나닝","수피","에스카","오녀리","왓구홍길동","하얀귤","핫스TV"],
+3:["킴성태","모선생","미르다요","박사장","방문자","뽀린걸","수힛","안내메시지","윤루트"],
+4:["걸뽀","권총빌런","꾸티뉴","로기다","빙밍","깡담비","한뒤얼","토끼예나","카시오라고"],
+5:["메리엄","살타","도현","주키니","아야","어화둥둥이","표커","해솔","이매짱"],
+6:["김니디","꽁주","눈부신","슈쨔응","새싹","선데이","스맵","슈향","저라뎃"],
+7:["강지","마다옴","마우쥐","봄세이","스나랑","이선","유키","채현찌","루오피스"],
+8:["고세구","금휘","루시아","루코","민쟁이","송엘","아로","주르르","포키쨩"]
+}
+
+function showDuo(){
+
+document.getElementById("duoSection").classList.remove("hidden")
+document.getElementById("squadSection").classList.add("hidden")
+
+document.getElementById("tabDuo").classList.add("active")
+document.getElementById("tabSquad").classList.remove("active")
+
+}
+
+function showSquad(){
+
+document.getElementById("duoSection").classList.add("hidden")
+document.getElementById("squadSection").classList.remove("hidden")
+
+document.getElementById("tabSquad").classList.add("active")
+document.getElementById("tabDuo").classList.remove("active")
+
+}
+
+function shuffle(arr){
+return [...arr].sort(()=>Math.random()-0.5)
+}
+
+function wrapTier(list,tier){
+return list.map(n=>({name:n,tier:tier}))
+}
+
+function renderDuos(container,data){
+let html="<table><tr><th>Team</th><th>Player 1</th><th>Player 2</th></tr>"
+
+data.forEach((t,i)=>{
+html+=`<tr><td>${i+1}</td><td>${t[0].name}<span class="tier">T${t[0].tier}</span></td><td>${t[1].name}<span class="tier">T${t[1].tier}</span></td></tr>`
+})
+
+html+="</table>"
+
+document.getElementById(container).innerHTML=html
+}
+
+function renderSquad(container,data){
+let html="<table><tr><th>Team</th><th>P1</th><th>P2</th><th>P3</th><th>P4</th></tr>"
+
+data.forEach((t,i)=>{
+html+=`<tr><td>${i+1}</td><td>${t[0].name}<span class="tier">T${t[0].tier}</span></td><td>${t[1].name}<span class="tier">T${t[1].tier}</span></td><td>${t[2].name}<span class="tier">T${t[2].tier}</span></td><td>${t[3].name}<span class="tier">T${t[3].tier}</span></td></tr>`
+})
+html+="</table>"
+
+document.getElementById(container).innerHTML=html
+}
+
+function generateDuos(){
+
+let t1=shuffle(wrapTier(tiers[1],1))
+let t2=shuffle(wrapTier(tiers[2],2))
+let t3=shuffle(wrapTier(tiers[3],3))
+let t4=shuffle(wrapTier(tiers[4],4))
+let t5=shuffle(wrapTier(tiers[5],5))
+let t6=shuffle(wrapTier(tiers[6],6))
+let t7=shuffle(wrapTier(tiers[7],7))
+let t8=shuffle(wrapTier(tiers[8],8))
+
+let match1=[]
+let match2=[]
+
+for(let i=0;i<9;i++){
+match1.push([t1[i],t8[i]])
+match1.push([t2[i],t7[i]])
+match1.push([t3[i],t6[i]])
+match1.push([t4[i],t5[i]])
+}
+
+match1=shuffle(match1)
+
+for(let i=0;i<9;i++){
+match2.push([t1[i],t8[(i+1)%9]])
+match2.push([t2[i],t7[(i+1)%9]])
+match2.push([t3[i],t6[(i+1)%9]])
+match2.push([t4[i],t5[(i+1)%9]])
+}
+
+match2=shuffle(match2)
+
+renderDuos("match1",match1)
+renderDuos("match2",match2)
+
+}
+
+function generateSquad(){
+
+let t1=shuffle(wrapTier(tiers[1],1))
+let t2=shuffle(wrapTier(tiers[2],2))
+let t3=shuffle(wrapTier(tiers[3],3))
+let t4=shuffle(wrapTier(tiers[4],4))
+let t5=shuffle(wrapTier(tiers[5],5))
+let t6=shuffle(wrapTier(tiers[6],6))
+let t7=shuffle(wrapTier(tiers[7],7))
+let t8=shuffle(wrapTier(tiers[8],8))
+
+let teams=[]
+
+for(let i=0;i<9;i++){
+teams.push([t1[i],t3[i],t7[i],t8[i]])
+}
+
+for(let i=0;i<9;i++){
+teams.push([t2[i],t4[i],t5[i],t6[i]])
+}
+
+teams=shuffle(teams)
+
+renderSquad("squad",teams)
+
+}
+
+</script>
+
+</body>
+</html>
