@@ -35,7 +35,6 @@ tr:nth-child(odd){background:#182235}
 <button id="tabSquad" onclick="showSquad()">👥 스쿼드 모드</button>
 </div>
 
-<!-- 듀오 영역 -->
 <div id="duoSection">
 <div class="buttons">
 <button class="action" onclick="generateDuos()">듀오 생성</button>
@@ -50,7 +49,6 @@ tr:nth-child(odd){background:#182235}
 </div>
 </div>
 
-<!-- 스쿼드 영역 -->
 <div id="squadSection" class="hidden">
 <div class="buttons">
 <button class="action" onclick="generateSquad()">스쿼드 생성</button>
@@ -79,116 +77,136 @@ const tiers={
 
 function showDuo(){
 
-document.getElementById("duoSection").classList.remove("hidden")
-document.getElementById("squadSection").classList.add("hidden")
+ document.getElementById("duoSection").classList.remove("hidden")
+ document.getElementById("squadSection").classList.add("hidden")
 
-document.getElementById("tabDuo").classList.add("active")
-document.getElementById("tabSquad").classList.remove("active")
+ document.getElementById("tabDuo").classList.add("active")
+ document.getElementById("tabSquad").classList.remove("active")
 
 }
 
 function showSquad(){
 
-document.getElementById("duoSection").classList.add("hidden")
-document.getElementById("squadSection").classList.remove("hidden")
+ document.getElementById("duoSection").classList.add("hidden")
+ document.getElementById("squadSection").classList.remove("hidden")
 
-document.getElementById("tabSquad").classList.add("active")
-document.getElementById("tabDuo").classList.remove("active")
+ document.getElementById("tabSquad").classList.add("active")
+ document.getElementById("tabDuo").classList.remove("active")
 
 }
 
 function shuffle(arr){
-return [...arr].sort(()=>Math.random()-0.5)
+ return [...arr].sort(()=>Math.random()-0.5)
 }
 
 function wrapTier(list,tier){
-return list.map(n=>({name:n,tier:tier}))
+ return list.map(n=>({name:n,tier:tier}))
+}
+
+function pairKey(a,b){
+ return [a.name,b.name].sort().join("-")
 }
 
 function renderDuos(container,data){
-let html="<table><tr><th>Team</th><th>Player 1</th><th>Player 2</th></tr>"
 
-data.forEach((t,i)=>{
-html+=`<tr><td>${i+1}</td><td>${t[0].name}<span class="tier">T${t[0].tier}</span></td><td>${t[1].name}<span class="tier">T${t[1].tier}</span></td></tr>`
-})
+ let html="<table><tr><th>Team</th><th>Player 1</th><th>Player 2</th></tr>"
 
-html+="</table>"
+ data.forEach((t,i)=>{
+ html+=`<tr><td>${i+1}</td><td>${t[0].name}<span class="tier">T${t[0].tier}</span></td><td>${t[1].name}<span class="tier">T${t[1].tier}</span></td></tr>`
+ })
 
-document.getElementById(container).innerHTML=html
+ html+="</table>"
+
+ document.getElementById(container).innerHTML=html
+
 }
 
 function renderSquad(container,data){
-let html="<table><tr><th>Team</th><th>P1</th><th>P2</th><th>P3</th><th>P4</th></tr>"
 
-data.forEach((t,i)=>{
-html+=`<tr><td>${i+1}</td><td>${t[0].name}<span class="tier">T${t[0].tier}</span></td><td>${t[1].name}<span class="tier">T${t[1].tier}</span></td><td>${t[2].name}<span class="tier">T${t[2].tier}</span></td><td>${t[3].name}<span class="tier">T${t[3].tier}</span></td></tr>`
-})
-html+="</table>"
+ let html="<table><tr><th>Team</th><th>P1</th><th>P2</th><th>P3</th><th>P4</th></tr>"
 
-document.getElementById(container).innerHTML=html
+ data.forEach((t,i)=>{
+ html+=`<tr><td>${i+1}</td><td>${t[0].name}<span class="tier">T${t[0].tier}</span></td><td>${t[1].name}<span class="tier">T${t[1].tier}</span></td><td>${t[2].name}<span class="tier">T${t[2].tier}</span></td><td>${t[3].name}<span class="tier">T${t[3].tier}</span></td></tr>`
+ })
+
+ html+="</table>"
+
+ document.getElementById(container).innerHTML=html
+
 }
 
 function generateDuos(){
 
-let t1=shuffle(wrapTier(tiers[1],1))
-let t2=shuffle(wrapTier(tiers[2],2))
-let t3=shuffle(wrapTier(tiers[3],3))
-let t4=shuffle(wrapTier(tiers[4],4))
-let t5=shuffle(wrapTier(tiers[5],5))
-let t6=shuffle(wrapTier(tiers[6],6))
-let t7=shuffle(wrapTier(tiers[7],7))
-let t8=shuffle(wrapTier(tiers[8],8))
+ let valid=false
+ let match1=[]
+ let match2=[]
 
-let match1=[]
-let match2=[]
+ while(!valid){
 
-for(let i=0;i<9;i++){
-match1.push([t1[i],t8[i]])
-match1.push([t2[i],t7[i]])
-match1.push([t3[i],t6[i]])
-match1.push([t4[i],t5[i]])
-}
+ let t1=shuffle(wrapTier(tiers[1],1))
+ let t2=shuffle(wrapTier(tiers[2],2))
+ let t3=shuffle(wrapTier(tiers[3],3))
+ let t4=shuffle(wrapTier(tiers[4],4))
+ let t5=shuffle(wrapTier(tiers[5],5))
+ let t6=shuffle(wrapTier(tiers[6],6))
+ let t7=shuffle(wrapTier(tiers[7],7))
+ let t8=shuffle(wrapTier(tiers[8],8))
 
-match1=shuffle(match1)
+ match1=[]
+ match2=[]
 
-for(let i=0;i<9;i++){
-match2.push([t1[i],t8[(i+1)%9]])
-match2.push([t2[i],t7[(i+1)%9]])
-match2.push([t3[i],t6[(i+1)%9]])
-match2.push([t4[i],t5[(i+1)%9]])
-}
+ for(let i=0;i<9;i++){
+ match1.push([t1[i],t8[i]])
+ match1.push([t2[i],t7[i]])
+ match1.push([t3[i],t6[i]])
+ match1.push([t4[i],t5[i]])
+ }
 
-match2=shuffle(match2)
+ match1=shuffle(match1)
 
-renderDuos("match1",match1)
-renderDuos("match2",match2)
+ for(let i=0;i<9;i++){
+ match2.push([t1[i],t8[(i+1)%9]])
+ match2.push([t2[i],t7[(i+1)%9]])
+ match2.push([t3[i],t6[(i+1)%9]])
+ match2.push([t4[i],t5[(i+1)%9]])
+ }
+
+ match2=shuffle(match2)
+
+ let set=new Set(match1.map(p=>pairKey(p[0],p[1])))
+ valid=!match2.some(p=>set.has(pairKey(p[0],p[1])))
+
+ }
+
+ renderDuos("match1",match1)
+ renderDuos("match2",match2)
 
 }
 
 function generateSquad(){
 
-let t1=shuffle(wrapTier(tiers[1],1))
-let t2=shuffle(wrapTier(tiers[2],2))
-let t3=shuffle(wrapTier(tiers[3],3))
-let t4=shuffle(wrapTier(tiers[4],4))
-let t5=shuffle(wrapTier(tiers[5],5))
-let t6=shuffle(wrapTier(tiers[6],6))
-let t7=shuffle(wrapTier(tiers[7],7))
-let t8=shuffle(wrapTier(tiers[8],8))
+ let t1=shuffle(wrapTier(tiers[1],1))
+ let t2=shuffle(wrapTier(tiers[2],2))
+ let t3=shuffle(wrapTier(tiers[3],3))
+ let t4=shuffle(wrapTier(tiers[4],4))
+ let t5=shuffle(wrapTier(tiers[5],5))
+ let t6=shuffle(wrapTier(tiers[6],6))
+ let t7=shuffle(wrapTier(tiers[7],7))
+ let t8=shuffle(wrapTier(tiers[8],8))
 
-let teams=[]
+ let teams=[]
 
-for(let i=0;i<9;i++){
-teams.push([t1[i],t3[i],t7[i],t8[i]])
-}
+ for(let i=0;i<9;i++){
+ teams.push([t1[i],t4[i],t5[i],t8[i]])
+ }
 
-for(let i=0;i<9;i++){
-teams.push([t2[i],t4[i],t5[i],t6[i]])
-}
+ for(let i=0;i<9;i++){
+ teams.push([t2[i],t3[i],t6[i],t7[i]])
+ }
 
-teams=shuffle(teams)
+ teams=shuffle(teams)
 
-renderSquad("squad",teams)
+ renderSquad("squad",teams)
 
 }
 
